@@ -91,9 +91,7 @@ public class ActivityTwo extends Activity {
 			mRestart = savedInstanceState.getInt("mRestart");
 			mStart = savedInstanceState.getInt("mStart");
 			
-			
-			
-			
+
 		}
 
 		// Emit LogCat message

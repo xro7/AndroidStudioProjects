@@ -72,6 +72,7 @@ public class ActivityOne extends Activity {
 				// start
 				Intent intent = new Intent(ActivityOne.this,ActivityTwo.class);
 
+
 				// Launch the Activity using the intent
 				startActivity(intent);
 			}
