@@ -23,7 +23,6 @@ public class MainActivity extends Activity implements
 		// and add it to the Activity
 
 		if (!isInTwoPaneMode()) {
-			
 			mFriendsFragment = new FriendsFragment();
 
 			//TODO 1 - add the FriendsFragment to the fragment_container
