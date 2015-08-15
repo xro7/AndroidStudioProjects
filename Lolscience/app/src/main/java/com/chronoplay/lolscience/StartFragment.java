@@ -1,6 +1,7 @@
 package com.chronoplay.lolscience;
 
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -35,7 +36,14 @@ import java.io.InputStreamReader;
 public class StartFragment extends Fragment {
 
     TextView text=null;
-    private String blogTitles;
+    private String responsestring;
+    private String name;
+    private String id;
+    private String summoner;
+    public static final boolean DEBUG = false;
+    View view;
+  Button button;
+
     public StartFragment() {
     }
 
@@ -44,23 +52,26 @@ public class StartFragment extends Fragment {
                              Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.fragment_start, container, false);
-        final Button button = (Button) view.findViewById(R.id.button);
+        view = inflater.inflate(R.layout.fragment_start, container, false);
+        button= (Button) view.findViewById(R.id.button);
         final EditText eText = (EditText)view.findViewById(R.id.editText);
         text = (TextView)view.findViewById(R.id.textView);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String summoner = eText.getText().toString();
-                Log.e("summoner", summoner);
+                summoner = eText.getText().toString();
                 if (checkSummoner(summoner)){
-                    summoner = fixSummoner(summoner);
-                    Log.e("summoner2", summoner);
-                    String url = "https://eune.api.pvp.net/api/lol/eune/v1.4/summoner/by-name/"+summoner+"?api_key=e95da8f9-5b0f-4a64-acb8-81113ce2d0c4";
-                    new AsyncHttpTask().execute(url);
+
+
+                        summoner = fixSummoner(summoner);
+                        Log.e("SUMMONERNAME:",summoner+"");
+                        String url = "https://eune.api.pvp.net/api/lol/eune/v1.4/summoner/by-name/" + summoner + "?api_key=e95da8f9-5b0f-4a64-acb8-81113ce2d0c4";
+                        new AsyncHttpTask().execute(url);
+                        button.setVisibility(view.GONE);
+
+
                 }else{
-                    Log.e("summoner3", summoner);
                     text.setText("Please type the summoner name");
                 }
 
@@ -78,42 +89,16 @@ public class StartFragment extends Fragment {
         }
     }
     private String fixSummoner(String summoner){
-        summoner = summoner.replace(" ","");
+        summoner = summoner.replace(" ","").toLowerCase();
         return summoner;
     }
-    /*public String getJSON(String address){
-        StringBuilder builder = new StringBuilder();
-        HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(address);
-        try{
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if(statusCode == 200){
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-                String line;
-                while((line = reader.readLine()) != null){
-                    builder.append(line);
-                }
-            } else {
-                Log.e(StartFragment.class.toString(), "Failedet JSON object");
-            }
-        }catch(ClientProtocolException e){
-            e.printStackTrace();
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        return builder.toString();
-    }*/
 
 
 
 
 
 
-    public class AsyncHttpTask extends AsyncTask<String, Void, Integer> {
+    private class AsyncHttpTask extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected Integer doInBackground(String... params) {
@@ -171,8 +156,14 @@ public class StartFragment extends Fragment {
 
             if(result == 1){
 
-                text.setText(blogTitles);
+                //text.setText(blogTitles); //debug
+                button.setVisibility(view.VISIBLE);
+                Intent intent = new Intent(StartFragment.this.getActivity(),Summoner.class);  //need to get the activity of the fragment
+                intent.putExtra("name", name);
+                intent.putExtra("id", id);
+                startActivity(intent);
             }else{
+                button.setVisibility(view.VISIBLE);
                 text.setText("Failed to fetch data!");
                 Log.e("ERROR", "Failed to fetch data!");
             }
@@ -198,19 +189,21 @@ public class StartFragment extends Fragment {
             return result;
         }
 
-        private void parseResult(String result) {
+            private void parseResult(String result) {
 
             try{
+
                 JSONObject response = new JSONObject(result);
-
-
-
-                blogTitles = response.toString();
-
-
-
+                responsestring = response.toString();// json reply se string (not needed)
+                Log.e("JSON RESPONSE",responsestring);
+                name = response.getJSONObject(summoner).getString("name");
+                Log.e("name",name);
+                id = response.getJSONObject(summoner).getString("id");
+                Log.e("id",id);
             }catch (JSONException e){
                 e.printStackTrace();
             }
         }
+
+
 }

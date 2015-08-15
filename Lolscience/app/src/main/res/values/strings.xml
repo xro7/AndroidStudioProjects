@@ -4,5 +4,6 @@
     <string name="action_settings">Settings</string>
     <string name="eune_api1">https://eune.api.pvp.net/api/lol/eune/v1.4/summoner/by-name/</string>
     <string name="key">api_key=e95da8f9-5b0f-4a64-acb8-81113ce2d0c4</string>
+    <string name="title_activity_summoner">Summoner</string>
 
 </resources>
