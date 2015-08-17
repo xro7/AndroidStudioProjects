@@ -23,6 +23,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -44,18 +46,23 @@ public class SummonerFragment extends Fragment {
     private String[] spellnames2 = new String[5];
     private String[] spellnames12 = new String[5];
     private String[] spellnames22 = new String[5];
-    private String[][] masteriesIds =new String[30][5];
-    private int[][] rank =new int[30][5];
-    private String[][] masteriesIds2 = new String[30][5];
-    private int[][] rank2 =new int[30][5];
+    private String[][] runesIds =new String[30][5];
+    private int[][] count =new int[30][5];
+    private String[][] runesIds2 = new String[30][5];
+    private int[][] count2 =new int[30][5];
     private int[] offense = {0,0,0,0,0,0,0,0,0,0};
     private int[] defense = {0,0,0,0,0,0,0,0,0,0};
     private int[] utility = {0,0,0,0,0,0,0,0,0,0};
 
+    SummonerData[] summonerData = new SummonerData[10];
 
-    TextView sum1,sum2,sum3,sum4,sum5,sum6,sum7,sum8,sum9,sum10;
-    ImageView champ1,champ2,champ3,champ4,champ5,champ6,champ7,champ8,champ9,champ10;
-    ImageView champ1ss1,champ1ss2,champ2ss1,champ2ss2,champ3ss1,champ3ss2,champ4ss1,champ4ss2,champ5ss1,champ5ss2,champ6ss1,champ6ss2,champ7ss1,champ7ss2,champ8ss1,champ8ss2,champ9ss1,champ9ss2,champ10ss1,champ10ss2;
+
+    TextView masteries1;
+    TextView[] summonerTextViews = new TextView[10];
+    ImageView[] championImage = new ImageView[10];
+    ImageView[] summonerSpell1 = new ImageView[10];
+    ImageView[] summonerSpell2 = new ImageView[10];
+
     public static final boolean DEBUG = false;
 
     public SummonerFragment() {
@@ -65,48 +72,31 @@ public class SummonerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_summoner, container, false);  //can import different layouts depending on what game is played. should check it before though.
-        sum1 = (TextView)view.findViewById(R.id.sum1);
-        sum2 = (TextView)view.findViewById(R.id.sum2);
-        sum3 = (TextView)view.findViewById(R.id.sum3);
-        sum4 = (TextView)view.findViewById(R.id.sum4);
-        sum5 = (TextView)view.findViewById(R.id.sum5);
-        sum6 = (TextView)view.findViewById(R.id.sum6);
-        sum7 = (TextView)view.findViewById(R.id.sum7);
-        sum8 = (TextView)view.findViewById(R.id.sum8);
-        sum9 = (TextView)view.findViewById(R.id.sum9);
-        sum10 = (TextView)view.findViewById(R.id.sum10);
 
-        champ1 = (ImageView)view.findViewById(R.id.champ1);
-        champ2 = (ImageView)view.findViewById(R.id.champ2);
-        champ3 = (ImageView)view.findViewById(R.id.champ3);
-        champ4 = (ImageView)view.findViewById(R.id.champ4);
-        champ5 = (ImageView)view.findViewById(R.id.champ5);
-        champ6 = (ImageView)view.findViewById(R.id.champ6);
-        champ7 = (ImageView)view.findViewById(R.id.champ7);
-        champ8 = (ImageView)view.findViewById(R.id.champ8);
-        champ9 = (ImageView)view.findViewById(R.id.champ9);
-        champ10 = (ImageView)view.findViewById(R.id.champ10);
+        for (int i =0;i<summonerTextViews.length;i++){
+            int id = i+1;
+            summonerTextViews[i] = (TextView) view.findViewById(getResources().getIdentifier("sum"+id,"id",getActivity().getPackageName()));
+        }
 
-        champ1ss1 = (ImageView)view.findViewById(R.id.champ1ss1);
-        champ1ss2 = (ImageView)view.findViewById(R.id.champ1ss2);
-        champ2ss1 = (ImageView)view.findViewById(R.id.champ2ss1);
-        champ2ss2 = (ImageView)view.findViewById(R.id.champ2ss2);
-        champ3ss1 = (ImageView)view.findViewById(R.id.champ3ss1);
-        champ3ss2 = (ImageView)view.findViewById(R.id.champ3ss2);
-        champ4ss1 = (ImageView)view.findViewById(R.id.champ4ss1);
-        champ4ss2 = (ImageView)view.findViewById(R.id.champ4ss2);
-        champ5ss1 = (ImageView)view.findViewById(R.id.champ5ss1);
-        champ5ss2 = (ImageView)view.findViewById(R.id.champ5ss2);
-        champ6ss1 = (ImageView)view.findViewById(R.id.champ6ss1);
-        champ6ss2 = (ImageView)view.findViewById(R.id.champ6ss2);
-        champ7ss1 = (ImageView)view.findViewById(R.id.champ7ss1);
-        champ7ss2 = (ImageView)view.findViewById(R.id.champ7ss2);
-        champ8ss1 = (ImageView)view.findViewById(R.id.champ8ss1);
-        champ8ss2 = (ImageView)view.findViewById(R.id.champ8ss2);
-        champ9ss1 = (ImageView)view.findViewById(R.id.champ9ss1);
-        champ9ss2 = (ImageView)view.findViewById(R.id.champ9ss2);
-        champ10ss1 = (ImageView)view.findViewById(R.id.champ10ss1);
-        champ10ss2 = (ImageView)view.findViewById(R.id.champ10ss2);
+        for (int i =0;i<championImage.length;i++){
+            int id = i+1;
+            championImage[i] = (ImageView) view.findViewById(getResources().getIdentifier("champ"+id,"id",getActivity().getPackageName()));
+        }
+
+     //   masteries1 = (TextView)view.findViewById(R.id.masteries1);
+
+        for (int i =0;i<10;i++){
+            int id = i+1;
+            Log.e("id","champ"+id+"ss1");
+            summonerSpell1[i] = (ImageView) view.findViewById(getResources().getIdentifier("champ"+id+"ss1","id",getActivity().getPackageName()));
+        }
+
+
+        for (int i =0;i<10;i++){
+            int id = i+1;
+            summonerSpell2[i] = (ImageView) view.findViewById(getResources().getIdentifier("champ"+id+"ss2","id",getActivity().getPackageName()));
+        }
+
 
 
         Intent intent = getActivity().getIntent();   // need to get acrivity's intent
@@ -186,9 +176,11 @@ public class SummonerFragment extends Fragment {
                 setSummonerNames();
                 findChampFromId();
                 setChampionImages();
-                findSummonerSpellFromID();
+                findSummonerSpellFromId();
                 setSummonerSpellImages();
-                computeMasteries();
+                //computeMasteries();
+                //setMasteries();
+                //computeRunes();
 
 
 
@@ -220,54 +212,36 @@ public class SummonerFragment extends Fragment {
     private void parseResult(String result) {
         try{
             JSONObject response = new JSONObject(result);
-            JSONArray arr = response.getJSONArray("participants");
-            JSONArray mastarray ;
-            int t1 = 0,t2 = 0;
+            JSONArray array = response.getJSONArray("participants");
+            JSONArray mastarray,runesarray ;
+            List<Masteries> masteries = new ArrayList<Masteries>();
+            Masteries mastery = new Masteries();
+            List<Runes> runes = new ArrayList<Runes>();
+            Runes rune = new Runes();
+           // int t1 = 0,t2 = 0;
 
-            for (int i=0;i<arr.length();i++){
-
-                if ( Integer.parseInt(arr.getJSONObject(i).getString("teamId"))==100){
-                    //champion names
-                    names1[t1] = arr.getJSONObject(i).getString("summonerName");
-                    Log.d("team1",names1[t1]+"");
-                    champid1[t1] = arr.getJSONObject(i).getString("championId");
-                    //summoner spells
-                    sumspellid1[t1] =  arr.getJSONObject(i).getString("spell1Id");
-                    sumspellid2[t1] =  arr.getJSONObject(i).getString("spell2Id");
-                    //masteries
-                    mastarray = arr.getJSONObject(i).getJSONArray("masteries");
-                    Log.e("aray length",mastarray.length()+"");
-                    for(int j=0;j<mastarray.length();j++){
-                        masteriesIds[j][t1] = mastarray.getJSONObject(j).getString("masteryId");
-                        rank[j][t1] = mastarray.getJSONObject(j).getInt("rank");
-                        System.out.println(masteriesIds[j][t1] +" "+rank[j][t1]);
-
-                    }
-                    Log.d("spells",sumspellid1[t1]+" "+sumspellid2[t1]);
-                    Log.d("cid",champid1[t1]+"");
-
-
-                    t1++;
-                }else{
-                    //champion names
-                    names2[t2] = arr.getJSONObject(i).getString("summonerName");
-                    Log.d("team2",names2[t2]+"");
-                    champid2[t2] = arr.getJSONObject(i).getString("championId");
-                    //summoner spells
-                    sumspellid12[t2] =  arr.getJSONObject(i).getString("spell1Id");
-                    sumspellid22[t2] =  arr.getJSONObject(i).getString("spell2Id");
-                    //masteries
-                    mastarray = arr.getJSONObject(i).getJSONArray("masteries");
-                    for(int j=0;j<mastarray.length();j++){
-                        masteriesIds2[j][t2] = mastarray.getJSONObject(j).getString("masteryId");
-                        rank2[j][t2] = mastarray.getJSONObject(j).getInt("rank");
-                        System.out.println(masteriesIds[j][t2] +" "+rank[j][t2]);
-                    }
-                    Log.d("spells",sumspellid12[t2]+" "+sumspellid22[t2]);
-                    Log.d("cid",champid2[t2]+"");
-                    t2++;
+            for (int i=0;i<array.length();i++){
+                summonerData[i] = new SummonerData();
+                summonerData[i].setSummonerName(array.getJSONObject(i).getString("summonerName"));
+                //Log.e("name",summonerData[i].getSummonerName());
+                summonerData[i].setTeamId(array.getJSONObject(i).getInt("teamId"));
+                summonerData[i].setChampionId(array.getJSONObject(i).getString("championId"));
+                summonerData[i].setSummonerSpellId1(array.getJSONObject(i).getString("spell1Id"));
+                summonerData[i].setSummonerSpellId2(array.getJSONObject(i).getString("spell2Id"));
+                mastarray = array.getJSONObject(i).getJSONArray("masteries");
+                for(int j=0;j<mastarray.length();j++){
+                    mastery.setMasteryId(mastarray.getJSONObject(j).getString("masteryId"));
+                    mastery.setRank(mastarray.getJSONObject(j).getInt("rank"));
+                    masteries.add(mastery);
                 }
-
+                summonerData[i].setMasteries(masteries);
+                runesarray = array.getJSONObject(i).getJSONArray("runes");
+                for(int j=0;j<runesarray.length();j++){
+                    rune.setRuneId(runesarray.getJSONObject(j).getString("runeId"));
+                    rune.setCount(runesarray.getJSONObject(j).getInt("count"));
+                    runes.add(rune);
+                }
+                summonerData[i].setRunes(runes);
 
             }
 
@@ -298,11 +272,8 @@ public class SummonerFragment extends Fragment {
 
         try {
             JSONObject jsonObj = new JSONObject(json);
-            for(int i=0;i<5;i++){
-                champnames1[i] = jsonObj.getJSONObject("data").getJSONObject(champid1[i]).getString("key");
-                Log.d("champname", champnames1[i]);
-                champnames2[i] = jsonObj.getJSONObject("data").getJSONObject(champid2[i]).getString("key");
-                Log.d("champname",champnames2[i]);
+            for(int i=0;i<10;i++){
+                summonerData[i].setChampionName(jsonObj.getJSONObject("data").getJSONObject(summonerData[i].getChampionId()).getString("key"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -310,56 +281,34 @@ public class SummonerFragment extends Fragment {
 
     }
 
-
-
     public void setSummonerNames(){
 
-        sum1.setText(names1[0]);
-        sum3.setText(names1[1]);
-        sum5.setText(names1[2]);
-        sum7.setText(names1[3]);
-        sum9.setText(names1[4]);
-        sum2.setText(names2[0]);
-        sum4.setText(names2[1]);
-        sum6.setText(names2[2]);
-        sum8.setText(names2[3]);
-        sum10.setText(names2[4]);
+        for (int i = 0;i<10;i++){
+            summonerTextViews[i].setText(summonerData[i].getSummonerName());
+        }
 
     }
 
     public void setChampionImages(){
-        int[] id = new int[5];
-        int[] id2 = new int[5];
-        for (int i = 0;i<5;i++){
-            id[i] = getResources().getIdentifier(champnames1[i].toLowerCase(),"drawable",getActivity().getPackageName());
-            id2[i] = getResources().getIdentifier(champnames2[i].toLowerCase(),"drawable",getActivity().getPackageName());
+        int[] id = new int[10];
+
+        for (int i = 0;i<10;i++){
+            id[i] = getResources().getIdentifier(summonerData[i].getChampionName().toLowerCase(),"drawable",getActivity().getPackageName());
 
         }
-
-        champ1.setImageResource(id[0]);
-        champ2.setImageResource(id2[0]);
-        champ3.setImageResource(id[1]);
-        champ4.setImageResource(id2[1]);
-        champ5.setImageResource(id[2]);
-        champ6.setImageResource(id2[2]);
-        champ7.setImageResource(id[3]);
-        champ8.setImageResource(id2[3]);
-        champ9.setImageResource(id[4]);
-        champ10.setImageResource(id2[4]);
-
+        for (int i = 0;i<10;i++){
+            championImage[i].setImageResource(id[i]);
+        }
     }
 
-    public void findSummonerSpellFromID(){
+    public void findSummonerSpellFromId(){
         String json = loadJSONFromAsset("SummonerSpells.json");
 
         try {
             JSONObject jsonObj = new JSONObject(json);
-            for(int i=0;i<5;i++){
-                spellnames1[i] = jsonObj.getJSONObject("data").getJSONObject(sumspellid1[i]).getString("key");
-                spellnames2[i] = jsonObj.getJSONObject("data").getJSONObject(sumspellid2[i]).getString("key");
-                spellnames12[i] = jsonObj.getJSONObject("data").getJSONObject(sumspellid12[i]).getString("key");
-                spellnames22[i] = jsonObj.getJSONObject("data").getJSONObject(sumspellid22[i]).getString("key");
-
+            for(int i=0;i<10;i++){
+                summonerData[i].setSummonerSpell1(jsonObj.getJSONObject("data").getJSONObject(summonerData[i].getSummonerSpellId1()).getString("key"));
+                summonerData[i].setSummonerSpell2(jsonObj.getJSONObject("data").getJSONObject(summonerData[i].getSummonerSpellId2()).getString("key"));
 
 
             }
@@ -370,37 +319,20 @@ public class SummonerFragment extends Fragment {
 
     public void setSummonerSpellImages(){
 
-        int[] ss1 = new int[5];
-        int[] ss2 = new int[5];
-        int[] ss12 = new int[5];
-        int[] ss22 = new int[5];
-        for (int i = 0;i<5;i++){
-            ss1[i] = getResources().getIdentifier(spellnames1[i].toLowerCase(),"drawable",getActivity().getPackageName());
-            ss2[i] = getResources().getIdentifier(spellnames2[i].toLowerCase(),"drawable",getActivity().getPackageName());
-            ss12[i] = getResources().getIdentifier(spellnames12[i].toLowerCase(),"drawable",getActivity().getPackageName());
-            ss22[i] = getResources().getIdentifier(spellnames22[i].toLowerCase(),"drawable",getActivity().getPackageName());
+        int[] ss1 = new int[10];
+        int[] ss2 = new int[10];
+
+        for (int i = 0;i<10;i++){
+
+            ss1[i] = getResources().getIdentifier(summonerData[i].getSummonerSpell1().toLowerCase(),"drawable",getActivity().getPackageName());
+            ss2[i] = getResources().getIdentifier(summonerData[i].getSummonerSpell2().toLowerCase(),"drawable",getActivity().getPackageName());
 
         }
-        champ1ss1.setImageResource(ss1[0]);
-        champ1ss2.setImageResource(ss2[0]);
-        champ2ss1.setImageResource(ss12[0]);
-        champ2ss2.setImageResource(ss22[0]);
-        champ3ss1.setImageResource(ss1[1]);
-        champ3ss2.setImageResource(ss2[1]);
-        champ4ss1.setImageResource(ss12[1]);
-        champ4ss2.setImageResource(ss22[1]);
-        champ5ss1.setImageResource(ss1[2]);
-        champ5ss2.setImageResource(ss2[2]);
-        champ6ss1.setImageResource(ss12[2]);
-        champ6ss2.setImageResource(ss22[2]);
-        champ7ss1.setImageResource(ss1[3]);
-        champ7ss2.setImageResource(ss2[3]);
-        champ8ss1.setImageResource(ss12[3]);
-        champ8ss2.setImageResource(ss22[3]);
-        champ9ss1.setImageResource(ss1[4]);
-        champ9ss2.setImageResource(ss2[4]);
-        champ10ss1.setImageResource(ss12[4]);
-        champ10ss2.setImageResource(ss22[4]);
+
+        for (int i = 0;i<10;i++){
+            summonerSpell1[i].setImageResource(ss1[i]);
+            summonerSpell2[i].setImageResource(ss2[i]);
+        }
 
 
 
@@ -415,7 +347,7 @@ public class SummonerFragment extends Fragment {
             JSONObject jsonObj = new JSONObject(json);
             for (int i=0;i<5;i++){
                 for (int j = 0; j < 30; j++) {
-                    if (masteriesIds[j][i]!=null) {
+                  /*  if (masteriesIds[j][i]!=null) {
 
                         if (jsonObj.getJSONObject("data").getJSONObject(masteriesIds[j][i]).getString("masteryTree").equals("Offense")) {
                             offense[i] = offense[i] + rank[j][i];
@@ -437,7 +369,7 @@ public class SummonerFragment extends Fragment {
                         }else{
                             utility[i+5] = utility[i+5] + rank2[j][i];
                         }
-                    }
+                    }*/
 
                 }
                 Log.e("masteries",offense[i]+"/"+defense[i]+"/"+utility[i]);
@@ -447,6 +379,61 @@ public class SummonerFragment extends Fragment {
             e.printStackTrace();
         }
 
+
+    }
+
+    public void setMasteries(){
+
+        masteries1.setText(offense[0]+"/"+defense[0]+"/"+utility[0]);
+
+    }
+
+    public  void computeRunes(){
+
+        String json = loadJSONFromAsset("runes.json");
+        String[][] description = new String[30][5];
+
+        try {
+            JSONObject jsonObj = new JSONObject(json);
+            for (int i=0;i<5;i++){
+                for (int j = 0; j < 30; j++) {
+                    if (runesIds[j][i]!=null) {
+
+                        description[j][i] = jsonObj.getJSONObject("data").getJSONObject(runesIds[j][i]).getString("description");
+                        Log.e("Runes:",count[j][i]+" * "+description[j][i]);
+                    }
+
+
+                }
+
+
+            }
+
+            for (int i=0;i<5;i++){
+                for (int j = 0; j < 30; j++) {
+                    if (runesIds2[j][i]!=null) {
+
+                        description[j][i] = jsonObj.getJSONObject("data").getJSONObject(runesIds2[j][i]).getString("description");
+
+                        Log.e("Runes:",count2[j][i]+" * "+description[j][i]);
+                    }
+
+
+                }
+
+
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        runesIds =null;
+        runesIds2 = null;
+        count =null;
+        count2 =null;
 
     }
 
